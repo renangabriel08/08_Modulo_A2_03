@@ -47,6 +47,10 @@ class _ListaState extends State<Lista> {
                   children: [
                     for (var escola in App.escolas)
                       ListTile(
+                        onTap: () {
+                          App.escola = escola;
+                          Navigator.pushNamed(context, '/detalhes');
+                        },
                         title: Text(
                           escola['nome'].toString(),
                           style: TextStyle(color: Cores.preto),

@@ -66,18 +66,18 @@ class _LoginState extends State<Login> {
                       return 'Campo obrigatório';
                     }
 
-                    // if (value.length < 6) {
-                    //   return '6 caracteres';
-                    // }
+                    if (value.length < 6) {
+                      return '6 caracteres';
+                    }
 
-                    // if (!value.contains(RegExp(r'[0-9]'))) {
-                    //   return 'No minimo um número';
-                    // }
+                    if (!value.contains(RegExp(r'[0-9]'))) {
+                      return 'No minimo um número';
+                    }
 
-                    // if (!value.contains(RegExp(r'[a-z]')) &&
-                    //     !value.contains(RegExp(r'[A-Z]'))) {
-                    //   return 'No minimo uma letra';
-                    // }
+                    if (!value.contains(RegExp(r'[a-z]')) &&
+                        !value.contains(RegExp(r'[A-Z]'))) {
+                      return 'No minimo uma letra';
+                    }
 
                     return null;
                   },

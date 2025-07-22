@@ -43,7 +43,7 @@ class _MapaState extends State<Mapa> {
       setState(() {});
 
       await App.validar(context);
-      await App.getEscolas();
+      await App.getEscolas(context);
 
       setState(() {});
     });

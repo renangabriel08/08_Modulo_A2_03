@@ -7,6 +7,7 @@ import 'package:modulo_a2/widgets/toast.dart';
 
 class App {
   static Map user = {};
+  static Map escola = {};
   static String token = '';
   static String motd = '';
   static List escolas = [];
