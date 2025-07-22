@@ -14,7 +14,6 @@ class _DetalhesState extends State<Detalhes> {
       await App.validar(context);
       await App.getComentarios();
 
-      App.comentarios.sort((a, b) => a['nome'].compareTo(b['nome']));
       setState(() {});
     });
   }
@@ -29,7 +28,7 @@ class _DetalhesState extends State<Detalhes> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(body: Container());
   }
 }

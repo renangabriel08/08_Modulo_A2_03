@@ -12,8 +12,13 @@ class Lista extends StatefulWidget {
 class _ListaState extends State<Lista> {
   startApp() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      App.escolas.clear();
+      setState(() {});
+
       await App.validar(context);
-      await App.getEscolas();
+      await App.getEscolas(context);
+
+      App.escolas.sort((a, b) => a['nome'].compareTo(b['nome']));
 
       setState(() {});
     });
@@ -29,8 +34,9 @@ class _ListaState extends State<Lista> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    
+
     return Scaffold(
+      appBar: AppBar(title: Text('Lista de Escolas')),
       body: App.escolas.isEmpty
           ? Center(child: CircularProgressIndicator())
           : SizedBox(
@@ -49,7 +55,11 @@ class _ListaState extends State<Lista> {
                           width: 120,
                           child: Row(
                             children: [
-                              for (int i = 0; i < escola['avaliacao']; i++)
+                              for (
+                                int i = 0;
+                                i < escola['avaliacao'].toInt();
+                                i++
+                              )
                                 Icon(Icons.star, color: Colors.yellow),
                               for (
                                 int i = escola['avaliacao'].toInt();

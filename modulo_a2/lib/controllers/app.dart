@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:modulo_a2/widgets/toast.dart';
 
 class App {
@@ -19,15 +20,21 @@ class App {
       final req = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'senha': senha}),
+        body: jsonEncode({'email': email, 'password': senha}),
       );
 
       final res = jsonDecode(utf8.decode(req.bodyBytes));
       if (req.statusCode == 200) {
         token = res['token'];
+        user = Jwt.parseJwt(token);
+        user['senha'] = senha;
+        await getMOTD();
+
         MyToast.get('Login realizado com sucesso!');
+        Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
-        MyToast.get(res['error']);
+        print(req.statusCode);
+        MyToast.get(res['error'].toString());
       }
     } catch (e) {
       MyToast.get('Erro ao realizar login');
@@ -45,7 +52,6 @@ class App {
 
       final res = jsonDecode(utf8.decode(req.bodyBytes));
       if (req.statusCode == 200) {
-        token = res['token'];
         MyToast.get('Token válidado com sucesso!');
       } else {
         MyToast.get(res['error']);
@@ -96,7 +102,7 @@ class App {
     }
   }
 
-  static getEscolas() async {
+  static getEscolas(BuildContext context) async {
     try {
       final url = Uri.parse('$base/A2/school_list');
       final req = await http.get(
@@ -106,13 +112,13 @@ class App {
 
       final res = jsonDecode(utf8.decode(req.bodyBytes));
       if (req.statusCode == 200) {
-        escolas = res;
+        escolas = res['escolas'];
         MyToast.get('Escolas buscadas com sucesso!');
       } else {
-        MyToast.get(res['error']);
+        MyToast.modal(res['error'], context);
       }
     } catch (e) {
-      MyToast.get('Erro ao buscar escolas');
+      MyToast.modal('Erro ao buscar escolas', context);
     }
   }
 
@@ -126,7 +132,7 @@ class App {
 
       final res = jsonDecode(utf8.decode(req.bodyBytes));
       if (req.statusCode == 200) {
-        comentarios = res;
+        comentarios = res['comentarios'];
         MyToast.get('Comentários buscados com sucesso!');
       } else {
         MyToast.get(res['error']);

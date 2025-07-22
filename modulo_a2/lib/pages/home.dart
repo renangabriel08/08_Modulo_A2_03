@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:modulo_a2/controllers/app.dart';
+import 'package:modulo_a2/styles/styles.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -27,7 +28,7 @@ class _HomeState extends State<Home> {
     double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Bem-vindo ${App.user['user']['name']}')),
+      appBar: AppBar(title: Text('Bem-vindo, ${App.user['name']}')),
       drawer: Drawer(
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -38,11 +39,21 @@ class _HomeState extends State<Home> {
                 children: [
                   Image.asset('assets/icon.png', height: 50),
                   Container(width: 16),
-                  Text('SafeEdu'),
+                  Text(
+                    'SafeEdu',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
+              Container(height: 16),
               ListTile(
-                title: Text('Home'),
+                title: Text(
+                  'Home',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Cores.azulEscuro,
+                  ),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                 },
