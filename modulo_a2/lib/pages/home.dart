@@ -69,6 +69,7 @@ class _HomeState extends State<Home> {
               ListTile(
                 title: Text('Mapa'),
                 onTap: () {
+                  App.escola = {};
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/mapa');
                 },
