@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -33,14 +34,54 @@ class App {
         await getMOTD();
         await salvarDados();
 
+        int tempo = DateTime.fromMillisecondsSinceEpoch(
+          user['exp'] * 1000,
+        ).difference(DateTime.now()).inMinutes;
+
+        Future.delayed(
+          Duration(minutes: tempo),
+          () => renovar(user['email'], user['senha'], context),
+        );
+
         MyToast.get('Login realizado com sucesso!');
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       } else {
-        print(req.statusCode);
         MyToast.get(res['error'].toString());
       }
     } catch (e) {
       MyToast.get('Erro ao realizar login');
+    }
+  }
+
+  static renovar(String email, String senha, BuildContext context) async {
+    try {
+      final url = Uri.parse('$base/jwt/generate_token');
+      final req = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': senha}),
+      );
+
+      final res = jsonDecode(utf8.decode(req.bodyBytes));
+      if (req.statusCode == 200) {
+        token = res['token'];
+        user = Jwt.parseJwt(token);
+        user['senha'] = senha;
+
+        MyToast.get('Token renovado com sucesso!');
+        int tempo = DateTime.fromMillisecondsSinceEpoch(
+          user['exp'] * 1000,
+        ).difference(DateTime.now()).inMinutes;
+
+        Future.delayed(
+          Duration(minutes: tempo),
+          () => renovar(user['email'], user['senha'], context),
+        );
+      } else {
+        MyToast.get(res['error'].toString());
+      }
+    } catch (e) {
+      MyToast.get('Erro ao renovar token');
     }
   }
 
@@ -83,6 +124,34 @@ class App {
       }
     } catch (e) {
       MyToast.get('Erro ao adicionar comentário');
+    }
+  }
+
+  static postPrint(File print) async {
+    try {
+      final url = Uri.parse('$base/A2/prints');
+      final req = http.MultipartRequest('POST', url);
+
+      req.files.add(
+        http.MultipartFile(
+          'imagem',
+          print.openRead(),
+          print.lengthSync(),
+          filename: print.path,
+        ),
+      );
+      req.fields['id_user'] = user['id'] ?? '1';
+      final request = await req.send();
+
+      if (request.statusCode == 200) {
+        MyToast.get('Print enviado para nossa base de dados com sucesso!');
+      } else {
+        MyToast.get(
+          'Erro ${request.statusCode} ao enviar print para nossa base de dados',
+        );
+      }
+    } catch (e) {
+      MyToast.get('Erro ao enviar print para nossa base de dados');
     }
   }
 

@@ -85,7 +85,6 @@ class _MapaState extends State<Mapa> {
                   ),
                   Container(height: 16),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width * .3,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -201,7 +200,6 @@ class _MapaState extends State<Mapa> {
                                   ),
                                   Container(height: 16),
                                   SizedBox(
-                                    width: width * .3,
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,

@@ -152,7 +152,7 @@ class _DetalhesState extends State<Detalhes> {
                     ElevatedButton(
                       onPressed: () => modal(),
                       style: ElevatedButton.styleFrom(
-                        fixedSize: Size(width * .3, 50),
+                        fixedSize: Size(width * .4, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10),
                         ),
@@ -166,7 +166,7 @@ class _DetalhesState extends State<Detalhes> {
                     ElevatedButton(
                       onPressed: () => Navigator.pushNamed(context, '/mapa'),
                       style: ElevatedButton.styleFrom(
-                        fixedSize: Size(width * .3, 50),
+                        fixedSize: Size(width * .4, 50),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadiusGeometry.circular(10),
                         ),

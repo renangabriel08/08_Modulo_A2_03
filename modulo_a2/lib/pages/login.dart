@@ -15,6 +15,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   TextEditingController email = TextEditingController();
   TextEditingController senha = TextEditingController();
+  bool obscureText = true;
 
   var formKey = GlobalKey<FormState>();
 
@@ -68,7 +69,7 @@ class _LoginState extends State<Login> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: width,
         height: height,
         child: Form(
@@ -91,6 +92,7 @@ class _LoginState extends State<Login> {
 
                     return null;
                   },
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'Email',
                     prefixIcon: Icon(Icons.email),
@@ -100,23 +102,25 @@ class _LoginState extends State<Login> {
                 Container(height: 16),
                 TextFormField(
                   controller: senha,
+                  obscureText: obscureText,
+                  keyboardType: TextInputType.visiblePassword,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Campo obrigatório';
                     }
 
-                    // if (value.length < 6) {
-                    //   return '6 caracteres';
-                    // }
+                    if (value.length < 6) {
+                      return '6 caracteres';
+                    }
 
-                    // if (!value.contains(RegExp(r'[0-9]'))) {
-                    //   return 'No minimo um número';
-                    // }
+                    if (!value.contains(RegExp(r'[0-9]'))) {
+                      return 'No minimo um número';
+                    }
 
-                    // if (!value.contains(RegExp(r'[a-z]')) &&
-                    //     !value.contains(RegExp(r'[A-Z]'))) {
-                    //   return 'No minimo uma letra';
-                    // }
+                    if (!value.contains(RegExp(r'[a-z]')) &&
+                        !value.contains(RegExp(r'[A-Z]'))) {
+                      return 'No minimo uma letra';
+                    }
 
                     return null;
                   },
@@ -124,6 +128,16 @@ class _LoginState extends State<Login> {
                     labelText: 'Senha',
                     prefixIcon: Icon(Icons.lock),
                     border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      onPressed: () => setState(() {
+                        obscureText = !obscureText;
+                      }),
+                      icon: Icon(
+                        obscureText
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
+                    ),
                   ),
                 ),
                 Container(height: 16),

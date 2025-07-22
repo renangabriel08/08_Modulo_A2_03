@@ -92,10 +92,14 @@ class _HomeState extends State<Home> {
       body: Container(
         width: width,
         height: height,
-        child: Center(
-          child: Text(
-            App.motd,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        child: Padding(
+          padding: const EdgeInsets.all(40),
+          child: Center(
+            child: Text(
+              App.motd,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
         ),
       ),
