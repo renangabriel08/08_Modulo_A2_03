@@ -13,6 +13,7 @@ class _HomeState extends State<Home> {
   startApp() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       await App.validar(context);
+      await App.getDados();
     });
   }
 
@@ -74,7 +75,8 @@ class _HomeState extends State<Home> {
               ),
               ListTile(
                 title: Text('Logout'),
-                onTap: () {
+                onTap: () async {
+                  await App.apagarDados();
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     '/login',

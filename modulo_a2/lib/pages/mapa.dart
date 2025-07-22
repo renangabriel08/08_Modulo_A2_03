@@ -37,6 +37,8 @@ class _MapaState extends State<Mapa> {
     return await Geolocator.getCurrentPosition();
   }
 
+  LatLng pos = LatLng(0, 0);
+
   startApp() async {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       App.escolas.clear();
@@ -44,6 +46,9 @@ class _MapaState extends State<Mapa> {
 
       await App.validar(context);
       await App.getEscolas(context);
+
+      Position position = await determinePosition();
+      pos = LatLng(position.latitude, position.longitude);
 
       setState(() {});
     });
@@ -60,6 +65,7 @@ class _MapaState extends State<Mapa> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
+      appBar: AppBar(),
       body: App.escolas.isEmpty
           ? Center(child: CircularProgressIndicator())
           : Container(

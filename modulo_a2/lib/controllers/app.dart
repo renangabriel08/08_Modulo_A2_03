@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:modulo_a2/widgets/toast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class App {
   static Map user = {};
@@ -30,6 +31,7 @@ class App {
         user = Jwt.parseJwt(token);
         user['senha'] = senha;
         await getMOTD();
+        await salvarDados();
 
         MyToast.get('Login realizado com sucesso!');
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
@@ -51,14 +53,15 @@ class App {
         body: jsonEncode({'token': token}),
       );
 
-      final res = jsonDecode(utf8.decode(req.bodyBytes));
       if (req.statusCode == 200) {
         MyToast.get('Token válidado com sucesso!');
       } else {
-        MyToast.get(res['error']);
+        MyToast.get('Erro ao validar token, entre novamente');
+        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
       }
     } catch (e) {
-      MyToast.get('Erro ao validar token');
+      MyToast.get('Erro ao validar token, entre novamente');
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
     }
   }
 
@@ -140,6 +143,44 @@ class App {
       }
     } catch (e) {
       MyToast.get('Erro ao buscar comentários');
+    }
+  }
+
+  static salvarDados() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user', jsonEncode(user));
+      await prefs.setBool('lembrar', lembrar);
+    } catch (e) {
+      MyToast.get('Erro ao salvar dados');
+    }
+  }
+
+  static apagarDados() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.remove('user');
+      await prefs.remove('lembrar');
+    } catch (e) {
+      MyToast.get('Erro ao apagar dados');
+    }
+  }
+
+  static getDados() async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? userJson = prefs.getString('user');
+      final bool? lembrarJson = prefs.getBool('lembrar');
+
+      if (lembrarJson != null && userJson != null) {
+        user = jsonDecode(userJson);
+        lembrar = lembrarJson;
+      } else {
+        lembrar = false;
+        user = {};
+      }
+    } catch (e) {
+      MyToast.get('Erro ao buscar dados');
     }
   }
 }

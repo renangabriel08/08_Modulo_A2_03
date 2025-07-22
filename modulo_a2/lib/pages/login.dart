@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:modulo_a2/controllers/app.dart';
 import 'package:modulo_a2/styles/styles.dart';
 import 'package:modulo_a2/widgets/toast.dart';
@@ -22,6 +24,43 @@ class _LoginState extends State<Login> {
     } else {
       MyToast.get('Preencha todos os campos corretamente');
     }
+  }
+
+  startApp() async {
+    await App.getDados();
+
+    if (App.lembrar) {
+      final LocalAuthentication auth = LocalAuthentication();
+      final bool pode = await auth.canCheckBiometrics;
+
+      if (pode) {
+        final List biometrias = await auth.getAvailableBiometrics();
+
+        if (biometrias.isNotEmpty) {
+          try {
+            final bool didAuthenticate = await auth.authenticate(
+              localizedReason: 'Please authenticate to show account balance',
+            );
+
+            if (didAuthenticate) {
+              await App.logar(App.user['email'], App.user['senha'], context);
+            }
+          } on PlatformException {
+            // ...
+          }
+        } else {
+          MyToast.get('Sem biometria cadastrada');
+        }
+      } else {
+        MyToast.get('Não pode biometria');
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    startApp();
+    super.initState();
   }
 
   @override
@@ -66,18 +105,18 @@ class _LoginState extends State<Login> {
                       return 'Campo obrigatório';
                     }
 
-                    if (value.length < 6) {
-                      return '6 caracteres';
-                    }
+                    // if (value.length < 6) {
+                    //   return '6 caracteres';
+                    // }
 
-                    if (!value.contains(RegExp(r'[0-9]'))) {
-                      return 'No minimo um número';
-                    }
+                    // if (!value.contains(RegExp(r'[0-9]'))) {
+                    //   return 'No minimo um número';
+                    // }
 
-                    if (!value.contains(RegExp(r'[a-z]')) &&
-                        !value.contains(RegExp(r'[A-Z]'))) {
-                      return 'No minimo uma letra';
-                    }
+                    // if (!value.contains(RegExp(r'[a-z]')) &&
+                    //     !value.contains(RegExp(r'[A-Z]'))) {
+                    //   return 'No minimo uma letra';
+                    // }
 
                     return null;
                   },
