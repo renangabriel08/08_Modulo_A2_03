@@ -11,6 +11,7 @@ class App {
   static List escolas = [];
   static List comentarios = [];
   static String base = 'https://workspace.dinizeotecnologia.com.br/worldskills';
+  static bool lembrar = false;
 
   static logar(String email, String senha, BuildContext context) async {
     try {
@@ -33,13 +34,13 @@ class App {
     }
   }
 
-  static validar(String email, String senha, BuildContext context) async {
+  static validar(BuildContext context) async {
     try {
       final url = Uri.parse('$base/jwt/validate_token');
       final req = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'senha': senha}),
+        body: jsonEncode({'token': token}),
       );
 
       final res = jsonDecode(utf8.decode(req.bodyBytes));
